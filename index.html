@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ciclofficina Sociale — Riparazione, Vendita e Noleggio Bici</title>
+<meta name="description" content="Ciclofficina sociale: riparazione, vendita e noleggio biciclette. Un laboratorio aperto, autogestito e a pedali per la mobilità sostenibile." />
+<link rel="canonical" href="./" />
+<meta property="og:title" content="Ciclofficina Sociale" />
+<meta property="og:description" content="Riparazione, vendita e noleggio biciclette in un laboratorio aperto e sociale." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="./assets/hero.jpg" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:    '#0a0a0c',
+          panel:  '#111114',
+          line:   '#22222a',
+          mute:   '#9a9aa6',
+          fore:   '#f4f4f0',
+          accent: '#f4c430',
+          accent2:'#ff5b3a',
+        },
+        fontFamily: {
+          display: ['"Bebas Neue"', 'sans-serif'],
+          grotesk: ['"Space Grotesk"', 'sans-serif'],
+          sans:    ['Inter', 'system-ui', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html, body { overflow-x: hidden; }
+  body { background:#0a0a0c; color:#f4f4f0; font-family:Inter,system-ui,sans-serif; }
+  ::selection { background:#f4c430; color:#0a0a0c; }
+
+  /* grain */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:1; opacity:.06;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* marquee */
+  .marquee { display:flex; overflow:hidden; gap:3rem; white-space:nowrap; }
+  .marquee-track { display:flex; gap:3rem; animation: marq 28s linear infinite; }
+  @keyframes marq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* hamburger button */
+  .hb { width:44px; height:44px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:6px; }
+  .hb span { display:block; width:26px; height:2px; background:#f4f4f0; transition:transform .35s ease, opacity .25s ease; transform-origin:center; }
+  .hb.active span:nth-child(1){ transform:translateY(8px) rotate(45deg); background:#f4c430; }
+  .hb.active span:nth-child(2){ opacity:0; }
+  .hb.active span:nth-child(3){ transform:translateY(-8px) rotate(-45deg); background:#f4c430; }
+
+  /* fullscreen overlay menu */
+  .nav-overlay {
+    position:fixed; inset:0; z-index:60;
+    background:radial-gradient(120% 80% at 80% 0%, #1a1a20 0%, #0a0a0c 60%);
+    transform:translateY(-100%);
+    transition:transform .6s cubic-bezier(.77,0,.18,1);
+    display:flex; flex-direction:column;
+  }
+  .nav-overlay.open { transform:translateY(0); }
+  .nav-overlay a.nav-link {
+    font-family:'Bebas Neue',sans-serif; font-size:clamp(2.6rem,9vw,6rem);
+    line-height:1; letter-spacing:.02em; color:#f4f4f0;
+    display:inline-block; position:relative; transition:color .25s, transform .35s;
+  }
+  .nav-overlay a.nav-link::before{
+    content:attr(data-num); font-family:'Inter',sans-serif; font-size:.7rem; color:#f4c430;
+    position:absolute; left:-2.2rem; top:.4rem; letter-spacing:.2em;
+  }
+  .nav-overlay a.nav-link:hover{ color:#f4c430; transform:translateX(10px); }
+
+  .nav-item { opacity:0; transform:translateY(30px); transition:opacity .5s, transform .5s; }
+  .nav-overlay.open .nav-item { opacity:1; transform:translateY(0); }
+  .nav-overlay.open .nav-item:nth-child(1){ transition-delay:.15s }
+  .nav-overlay.open .nav-item:nth-child(2){ transition-delay:.22s }
+  .nav-overlay.open .nav-item:nth-child(3){ transition-delay:.29s }
+  .nav-overlay.open .nav-item:nth-child(4){ transition-delay:.36s }
+  .nav-overlay.open .nav-item:nth-child(5){ transition-delay:.43s }
+  .nav-overlay.open .nav-item:nth-child(6){ transition-delay:.50s }
+  .nav-overlay.open .nav-item:nth-child(7){ transition-delay:.57s }
+
+  body.menu-open { overflow:hidden; }
+
+  /* gallery hover */
+  .gal { position:relative; overflow:hidden; }
+  .gal img { transition:transform .8s cubic-bezier(.2,.7,.2,1), filter .4s; }
+  .gal:hover img { transform:scale(1.08); filter:brightness(.7); }
+  .gal .cap {
+    position:absolute; inset:auto 0 0 0; padding:1rem;
+    background:linear-gradient(to top, rgba(0,0,0,.85), transparent);
+    transform:translateY(20%); opacity:0; transition:.4s;
+  }
+  .gal:hover .cap { transform:translateY(0); opacity:1; }
+
+  /* card glow */
+  .card-glow { position:relative; }
+  .card-glow::after{
+    content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px;
+    background:linear-gradient(135deg, transparent 40%, rgba(244,196,48,.6), transparent 70%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    opacity:0; transition:.4s;
+  }
+  .card-glow:hover::after { opacity:1; }
+
+  /* page sections */
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* cookie banner */
+  .cookie-banner {
+    position:fixed; left:1rem; right:1rem; bottom:1rem; z-index:70;
+    background:#111114; border:1px solid #22222a; border-radius:18px;
+    padding:1.2rem 1.4rem; box-shadow:0 30px 60px -20px rgba(0,0,0,.6);
+    transform:translateY(120%); opacity:0; transition:.5s cubic-bezier(.2,.7,.2,1);
+    backdrop-filter:blur(14px);
+  }
+  .cookie-banner.show { transform:translateY(0); opacity:1; }
+  @media (min-width:768px){ .cookie-banner { left:auto; right:1.5rem; bottom:1.5rem; max-width:420px; } }
+
+  /* pricing row */
+  .price-row:hover { background:#15151a; }
+  .price-row { transition:background .25s; }
+
+  /* hero blob */
+  .blob {
+    position:absolute; border-radius:9999px; filter:blur(80px); opacity:.4;
+    pointer-events:none;
+  }
+
+  /* button */
+  .btn-accent {
+    background:#f4c430; color:#0a0a0c; font-weight:700;
+    padding:.9rem 1.6rem; border-radius:9999px;
+    display:inline-flex; align-items:center; gap:.6rem;
+    transition:transform .25s, box-shadow .25s;
+  }
+  .btn-accent:hover { transform:translateY(-2px); box-shadow:0 12px 30px -10px rgba(244,196,48,.5); }
+  .btn-ghost {
+    border:1px solid #2c2c34; color:#f4f4f0;
+    padding:.85rem 1.5rem; border-radius:9999px;
+    display:inline-flex; align-items:center; gap:.6rem;
+    transition:.25s;
+  }
+  .btn-ghost:hover { border-color:#f4c430; color:#f4c430; }
+
+  /* anchor offset */
+  section[id]{ scroll-margin-top:90px; }
+
+  /* footer link */
+  .footer-link { color:#9a9aa6; transition:color .2s; }
+  .footer-link:hover { color:#f4c430; }
+</style>
+</head>
+<body class="relative">
+
+<!-- HEADER -->
+<header class="fixed top-0 inset-x-0 z-50 bg-ink/70 backdrop-blur-md border-b border-line">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 h-[72px] flex items-center justify-between">
+    <a href="#" data-page="home" class="flex items-center gap-2 group">
+      <span class="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-ink font-black">C</span>
+      <span class="font-display tracking-wide text-xl group-hover:text-accent transition">CICLOFFICINA</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8 text-sm">
+      <a href="#servizi" class="hover:text-accent transition">Servizi</a>
+      <a href="#officina" class="hover:text-accent transition">Officina</a>
+      <a href="#gallery" class="hover:text-accent transition">Gallery</a>
+      <a href="#listino" class="hover:text-accent transition">Listino</a>
+      <a href="#contatti" class="hover:text-accent transition">Contatti</a>
+    </nav>
+    <button id="navBtn" class="hb relative z-[70]" aria-label="Apri menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- FULLSCREEN MENU -->
+<div id="navMenu" class="nav-overlay">
+  <div class="max-w-7xl mx-auto px-8 md:px-16 pt-32 pb-10 flex-1 flex flex-col">
+    <p class="text-xs tracking-[.4em] text-mute mb-8 nav-item">MENU</p>
+    <ul class="space-y-3 md:space-y-5 pl-10">
+      <li class="nav-item"><a class="nav-link" data-num="01" href="#" data-page="home">Home</a></li>
+      <li class="nav-item"><a class="nav-link" data-num="02" href="#servizi" data-page="home">Servizi</a></li>
+      <li class="nav-item"><a class="nav-link" data-num="03" href="#officina" data-page="home">Officina</a></li>
+      <li class="nav-item"><a class="nav-link" data-num="04" href="#gallery" data-page="home">Gallery</a></li>
+      <li class="nav-item"><a class="nav-link" data-num="05" href="#listino" data-page="home">Listino</a></li>
+      <li class="nav-item"><a class="nav-link" data-num="06" href="#contatti" data-page="home">Contatti</a></li>
+    </ul>
+    <div class="mt-auto pt-10 grid sm:grid-cols-3 gap-6 text-sm text-mute border-t border-line">
+      <div class="nav-item">
+        <p class="text-fore mb-1 font-medium">Dove siamo</p>
+        Via delle Bici 12 — Quartiere Giardino
+      </div>
+      <div class="nav-item">
+        <p class="text-fore mb-1 font-medium">Contatti</p>
+        ciao@ciclofficina.org<br/>+39 333 000 0000
+      </div>
+      <div class="nav-item">
+        <p class="text-fore mb-1 font-medium">Seguici</p>
+        Instagram · Facebook · Telegram
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============== HOME PAGE ============== -->
+<main id="page-home" class="page active pt-[72px]">
+
+  <!-- HERO -->
+  <section class="relative overflow-hidden">
+    <div class="blob bg-accent w-[480px] h-[480px] -top-20 -left-20"></div>
+    <div class="blob bg-accent2 w-[420px] h-[420px] -bottom-32 right-10"></div>
+    <div class="max-w-7xl mx-auto px-5 md:px-8 pt-12 md:pt-20 pb-20 relative">
+      <div class="grid lg:grid-cols-12 gap-10 items-end">
+        <div class="lg:col-span-7">
+          <p data-aos="fade-up" class="text-xs tracking-[.4em] text-accent mb-6">CICLOFFICINA SOCIALE · DAL 2014</p>
+          <h1 data-aos="fade-up" data-aos-delay="100" class="font-display leading-[.85] tracking-tight text-[18vw] md:text-[10rem] break-words">
+            Ripara.<br/><span class="text-accent">Pedala.</span><br/>Resisti.
+          </h1>
+          <p data-aos="fade-up" data-aos-delay="200" class="text-mute text-lg md:text-xl max-w-xl mt-8">
+            Un laboratorio aperto e autogestito dove riparare, vendere e noleggiare biciclette è anche un gesto politico, ecologico e collettivo.
+          </p>
+          <div data-aos="fade-up" data-aos-delay="300" class="flex flex-wrap gap-3 mt-8">
+            <a href="#servizi" class="btn-accent">Scopri i servizi →</a>
+            <a href="#contatti" class="btn-ghost">Vieni a trovarci</a>
+          </div>
+        </div>
+        <div data-aos="fade-left" data-aos-delay="200" class="lg:col-span-5 relative">
+          <div class="relative rounded-3xl overflow-hidden border border-line">
+            <img src="./assets/hero.jpg" alt="Ciclofficina sociale" class="w-full h-[420px] md:h-[520px] object-cover" />
+            <div class="absolute bottom-4 left-4 right-4 bg-ink/80 backdrop-blur rounded-2xl p-4 border border-line">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-2xl font-display text-accent">+1.200</p>
+                  <p class="text-xs text-mute">bici riparate</p>
+                </div>
+                <div>
+                  <p class="text-2xl font-display text-accent">12</p>
+                  <p class="text-xs text-mute">anni di attività</p>
+                </div>
+                <div>
+                  <p class="text-2xl font-display text-accent">100%</p>
+                  <p class="text-xs text-mute">no profit</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <section class="border-y border-line bg-panel py-6 overflow-hidden">
+    <div class="marquee">
+      <div class="marquee-track font-display text-3xl md:text-5xl">
+        <span>RIPARAZIONE</span><span class="text-accent">★</span>
+        <span>VENDITA USATO</span><span class="text-accent">★</span>
+        <span>NOLEGGIO</span><span class="text-accent">★</span>
+        <span>CORSI</span><span class="text-accent">★</span>
+        <span>AUTOGESTIONE</span><span class="text-accent">★</span>
+        <span>RIPARAZIONE</span><span class="text-accent">★</span>
+        <span>VENDITA USATO</span><span class="text-accent">★</span>
+        <span>NOLEGGIO</span><span class="text-accent">★</span>
+        <span>CORSI</span><span class="text-accent">★</span>
+        <span>AUTOGESTIONE</span><span class="text-accent">★</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVIZI -->
+  <section id="servizi" class="max-w-7xl mx-auto px-5 md:px-8 py-24">
+    <div class="flex items-end justify-between mb-12 flex-wrap gap-6">
+      <div>
+        <p data-aos="fade-up" class="text-xs tracking-[.4em] text-accent mb-3">01 — COSA FACCIAMO</p>
+        <h2 data-aos="fade-up" class="font-display text-5xl md:text-7xl">I nostri servizi</h2>
+      </div>
+      <p data-aos="fade-up" class="text-mute max-w-md">Tutto ciò che serve per tenere la tua bici in strada. E se non sai farlo, te lo insegniamo.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <article data-aos="fade-up" class="card-glow bg-panel border border-line rounded-3xl overflow-hidden">
+        <img src="./assets/repair.jpg" alt="Riparazione" class="w-full h-56 object-cover" loading="lazy" />
+        <div class="p-7">
+          <p class="text-accent text-xs tracking-[.3em] mb-3">01</p>
+          <h3 class="font-display text-3xl mb-2">Riparazione</h3>
+          <p class="text-mute mb-5">Diagnosi gratuita, tagliandi, riparazioni di emergenza, restauro di telai vintage.</p>
+          <a href="#listino" class="text-accent inline-flex items-center gap-2 hover:gap-3 transition-all">Vedi listino →</a>
+        </div>
+      </article>
+      <article data-aos="fade-up" data-aos-delay="100" class="card-glow bg-panel border border-line rounded-3xl overflow-hidden">
+        <img src="./assets/sale.jpg" alt="Vendita" class="w-full h-56 object-cover" loading="lazy" />
+        <div class="p-7">
+          <p class="text-accent text-xs tracking-[.3em] mb-3">02</p>
+          <h3 class="font-display text-3xl mb-2">Vendita usato</h3>
+          <p class="text-mute mb-5">Bici rigenerate, accessori e ricambi a prezzi popolari. Garanzia umana.</p>
+          <a href="#contatti" class="text-accent inline-flex items-center gap-2 hover:gap-3 transition-all">Chiedi disponibilità →</a>
+        </div>
+      </article>
+      <article data-aos="fade-up" data-aos-delay="200" class="card-glow bg-panel border border-line rounded-3xl overflow-hidden">
+        <img src="./assets/rent.jpg" alt="Noleggio" class="w-full h-56 object-cover" loading="lazy" />
+        <div class="p-7">
+          <p class="text-accent text-xs tracking-[.3em] mb-3">03</p>
+          <h3 class="font-display text-3xl mb-2">Noleggio etico</h3>
+          <p class="text-mute mb-5">Bici da città, gravel e cargo. Tariffe oneste, nessun deposito assurdo.</p>
+          <a href="#listino" class="text-accent inline-flex items-center gap-2 hover:gap-3 transition-all">Tariffe →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- OFFICINA / ABOUT -->
+  <section id="officina" class="bg-panel border-y border-line py-24">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-2 gap-12 items-center">
+      <div data-aos="fade-right" class="relative rounded-3xl overflow-hidden border border-line">
+        <img src="./assets/about.jpg" alt="L'officina" class="w-full h-[480px] object-cover" loading="lazy" />
+        <div class="absolute top-4 left-4 bg-accent text-ink text-xs font-bold px-3 py-1.5 rounded-full">DAL 2014</div>
+      </div>
+      <div>
+        <p data-aos="fade-up" class="text-xs tracking-[.4em] text-accent mb-3">02 — CHI SIAMO</p>
+        <h2 data-aos="fade-up" class="font-display text-5xl md:text-7xl mb-6">Un'officina che è anche una <span class="text-accent">comunità</span>.</h2>
+        <p data-aos="fade-up" class="text-mute text-lg mb-8">
+          Siamo un collettivo di soci e socie che credono nella mobilità dolce, nel riuso e nell'auto-organizzazione. La nostra officina è un luogo dove si imparano cose, si condividono attrezzi e si costruiscono relazioni.
+        </p>
+        <div class="grid grid-cols-2 gap-6">
+          <div data-aos="fade-up"><p class="font-display text-4xl text-accent">+450</p><p class="text-mute text-sm">soci e socie attive</p></div>
+          <div data-aos="fade-up" data-aos-delay="80"><p class="font-display text-4xl text-accent">3</p><p class="text-mute text-sm">corsi annui aperti</p></div>
+          <div data-aos="fade-up" data-aos-delay="160"><p class="font-display text-4xl text-accent">€0</p><p class="text-mute text-sm">scopo di lucro</p></div>
+          <div data-aos="fade-up" data-aos-delay="240"><p class="font-display text-4xl text-accent">∞</p><p class="text-mute text-sm">caffè offerti</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="max-w-7xl mx-auto px-5 md:px-8 py-24">
+    <div class="flex items-end justify-between mb-12 flex-wrap gap-6">
+      <div>
+        <p data-aos="fade-up" class="text-xs tracking-[.4em] text-accent mb-3">03 — DENTRO L'OFFICINA</p>
+        <h2 data-aos="fade-up" class="font-display text-5xl md:text-7xl">Gallery</h2>
+      </div>
+      <p data-aos="fade-up" class="text-mute max-w-md">Mani sporche, ruote nuove, persone vere. Un giorno qualunque in officina.</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px] md:auto-rows-[240px]">
+      <div data-aos="zoom-in" class="gal rounded-2xl border border-line col-span-2 row-span-2">
+        <img src="./assets/gallery1.jpg" alt="Riparazione catena" class="w-full h-full object-cover" loading="lazy" />
+        <div class="cap"><p class="font-display text-xl">Catena & ingranaggi</p><p class="text-mute text-sm">Le mani che fanno tornare le bici in strada.</p></div>
+      </div>
+      <div data-aos="zoom-in" data-aos-delay="80" class="gal rounded-2xl border border-line">
+        <img src="./assets/gallery3.jpg" alt="Cerchi appesi" class="w-full h-full object-cover" loading="lazy" />
+        <div class="cap"><p class="font-display text-xl">Magazzino ricambi</p></div>
+      </div>
+      <div data-aos="zoom-in" data-aos-delay="160" class="gal rounded-2xl border border-line">
+        <img src="./assets/gallery5.jpg" alt="Cassetta attrezzi" class="w-full h-full object-cover" loading="lazy" />
+        <div class="cap"><p class="font-display text-xl">Attrezzi del mestiere</p></div>
+      </div>
+      <div data-aos="zoom-in" data-aos-delay="80" class="gal rounded-2xl border border-line col-span-2">
+        <img src="./assets/gallery2.jpg" alt="Comunità" class="w-full h-full object-cover" loading="lazy" />
+        <div class="cap"><p class="font-display text-xl">Officina aperta</p><p class="text-mute text-sm">Ogni giovedì, chiunque può venire a riparare.</p></div>
+      </div>
+      <div data-aos="zoom-in" data-aos-delay="160" class="gal rounded-2xl border border-line col-span-2">
+        <img src="./assets/gallery4.jpg" alt="Città in bici" class="w-full h-full object-cover" loading="lazy" />
+        <div class="cap"><p class="font-display text-xl">Pedala la città</p><p class="text-mute text-sm">Riprendiamoci le strade, un giro alla volta.</p></div>
+      </div>
+      <div data-aos="zoom-in" data-aos-delay="80" class="gal rounded-2xl border border-line col-span-2 md:col-span-2">
+        <img src="./assets/gallery6.jpg" alt="Corsi" class="w-full h-full object-cover" loading="lazy" />
+        <div class="cap"><p class="font-display text-xl">Corsi & trasmissione</p><p class="text-mute text-sm">Si impara, si insegna, si pedala.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LISTINO -->
+  <section id="listino" class="bg-panel border-y border-line py-24">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="flex items-end justify-between mb-12 flex-wrap gap-6">
+        <div>
+          <p data-aos="fade-up" class="text-xs tracking-[.4em] text-accent mb-3">04 — TARIFFE</p>
+          <h2 data-aos="fade-up" class="font-display text-5xl md:text-7xl">Listino onesto</h2>
+        </div>
+        <p data-aos="fade-up" class="text-mute max-w-md">Prezzi popolari. Se non puoi pagare, parlane con noi: troviamo una soluzione.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div data-aos="fade-up" class="bg-ink border border-line rounded-3xl p-8">
+          <h3 class="font-display text-3xl mb-6 text-accent">Riparazione</h3>
+          <div class="divide-y divide-line">
+            <div class="price-row flex justify-between py-4 px-2 rounded-lg"><span>Diagnosi & preventivo</span><span class="font-display text-2xl">Gratis</span></div>
+            <div class="price-row flex justify-between py-4 px-2 rounded-lg"><span>Riparazione foratura</span><span class="font-display text-2xl">8 €</span></div>
+            <div class="price-row flex justify-between py-4 px-2 rounded-lg"><span>Tagliando completo</span><span class="font-display text-2xl">35 €</span></div>
+            <div class="price-row flex justify-between py-4 px-2 rounded-lg"><span>Centratura ruota</span><span class="font-display text-2xl">12 €</span></div>
+            <div class="price-row flex justify-between py-4 px-2 rounded-lg"><span>Cambio cavi & guaine</span><span class="font-display text-2xl">18 €</span></div>
+          </div>
+        </div>
+        <div data-aos="fade-up" data-aos-delay="120" class="bg-ink border border-line rounded-3xl p-8">
+          <h3 class="font-display text-3xl mb-6 text-accent">Noleggio</h3>
+          <div class="divide-y divide-line">
+            <div class="price-row flex justify-between py-4 px-2 rounded-lg"><span>City bike — 1 giorno</span><span class="font-display text-2xl">10 €</span></div>
+            <div class="price-row flex justify-between py-4 px-2 rounded-lg"><span>City bike — settimana</span><span class="font-display text-2xl">45 €</span></div>
+            <div class="price-row flex justify-between py-4 px-2 rounded-lg"><span>Gravel — 1 giorno</span><span class="font-display text-2xl">20 €</span></div>
+            <div class="price-row flex justify-between py-4 px-2 rounded-lg"><span>Cargo bike — 1 giorno</span><span class="font-display text-2xl">25 €</span></div>
+            <div class="price-row flex justify-between py-4 px-2 rounded-lg"><span>Tessera socio</span><span class="font-display text-2xl">15 €/anno</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATTI -->
+  <section id="contatti" class="max-w-7xl mx-auto px-5 md:px-8 py-24">
+    <div class="grid lg:grid-cols-2 gap-12">
+      <div>
+        <p data-aos="fade-up" class="text-xs tracking-[.4em] text-accent mb-3">05 — VIENI A TROVARCI</p>
+        <h2 data-aos="fade-up" class="font-display text-5xl md:text-7xl mb-8">Passa<br/>in officina.</h2>
+        <p data-aos="fade-up" class="text-mute text-lg mb-8">Niente appuntamenti, niente fronzoli. Porta la tua bici e una storia da raccontare.</p>
+        <div class="space-y-3 text-lg">
+          <p data-aos="fade-up"><span class="text-mute">Indirizzo · </span>Via delle Bici 12, Quartiere Giardino</p>
+          <p data-aos="fade-up"><span class="text-mute">Email · </span><a href="mailto:ciao@ciclofficina.org" class="hover:text-accent">ciao@ciclofficina.org</a></p>
+          <p data-aos="fade-up"><span class="text-mute">Tel · </span>+39 333 000 0000</p>
+        </div>
+      </div>
+      <div data-aos="fade-left" class="bg-panel border border-line rounded-3xl p-8">
+        <h3 class="font-display text-3xl mb-6">Orari di apertura</h3>
+        <ul class="divide-y divide-line">
+          <li class="flex justify-between py-3"><span>Lunedì</span><span class="text-mute">Chiuso</span></li>
+          <li class="flex justify-between py-3"><span>Martedì — Venerdì</span><span class="text-accent">15:00 — 19:30</span></li>
+          <li class="flex justify-between py-3"><span>Giovedì sera</span><span class="text-accent">Officina aperta · 19:30 — 23:00</span></li>
+          <li class="flex justify-between py-3"><span>Sabato</span><span class="text-accent">10:00 — 18:00</span></li>
+          <li class="flex justify-between py-3"><span>Domenica</span><span class="text-mute">Solo eventi</span></li>
+        </ul>
+        <a href="mailto:ciao@ciclofficina.org" class="btn-accent mt-8">Scrivici una mail →</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============== PRIVACY PAGE ============== -->
+<main id="page-privacy" class="page pt-[120px] pb-24">
+  <div class="max-w-3xl mx-auto px-5 md:px-8">
+    <a href="#" data-page="home" class="text-accent text-sm">← Torna alla home</a>
+    <p class="text-xs tracking-[.4em] text-accent mt-6 mb-3">DOCUMENTO LEGALE</p>
+    <h1 class="font-display text-5xl md:text-7xl mb-8">Privacy Policy</h1>
+    <div class="prose prose-invert max-w-none text-mute space-y-6 leading-relaxed">
+      <p><strong class="text-fore">Ultimo aggiornamento:</strong> Gennaio 2026</p>
+      <p>La presente informativa descrive come <strong class="text-fore">Ciclofficina Sociale</strong> tratta i dati personali raccolti tramite questo sito, ai sensi del Regolamento UE 2016/679 (GDPR).</p>
+      <h2 class="text-fore font-display text-3xl mt-8">1. Titolare del trattamento</h2>
+      <p>Ciclofficina Sociale APS — Via delle Bici 12 — ciao@ciclofficina.org</p>
+      <h2 class="text-fore font-display text-3xl mt-8">2. Dati raccolti</h2>
+      <p>Il sito non richiede registrazione. Possiamo trattare:</p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>Dati di contatto se ci scrivi via email (nome, indirizzo email, contenuto del messaggio).</li>
+        <li>Dati tecnici di navigazione (indirizzo IP anonimizzato, user agent) raccolti dal nostro hosting per ragioni di sicurezza.</li>
+      </ul>
+      <h2 class="text-fore font-display text-3xl mt-8">3. Finalità</h2>
+      <p>I dati sono trattati per rispondere alle tue richieste, garantire la sicurezza del sito e adempiere a obblighi di legge.</p>
+      <h2 class="text-fore font-display text-3xl mt-8">4. Base giuridica</h2>
+      <p>Il trattamento si basa sul consenso (cookie non tecnici) e sul legittimo interesse (sicurezza, funzionamento del sito).</p>
+      <h2 class="text-fore font-display text-3xl mt-8">5. Conservazione</h2>
+      <p>I dati sono conservati per il tempo necessario alle finalità sopra indicate e comunque non oltre 24 mesi.</p>
+      <h2 class="text-fore font-display text-3xl mt-8">6. Diritti dell'interessato</h2>
+      <p>Puoi esercitare i diritti previsti dagli artt. 15-22 GDPR (accesso, rettifica, cancellazione, opposizione, portabilità) scrivendo a <a href="mailto:privacy@ciclofficina.org" class="text-accent">privacy@ciclofficina.org</a>.</p>
+      <h2 class="text-fore font-display text-3xl mt-8">7. Reclamo</h2>
+      <p>Hai diritto di proporre reclamo al Garante per la Protezione dei Dati Personali (www.garanteprivacy.it).</p>
+    </div>
+  </div>
+</main>
+
+<!-- ============== COOKIE PAGE ============== -->
+<main id="page-cookie" class="page pt-[120px] pb-24">
+  <div class="max-w-3xl mx-auto px-5 md:px-8">
+    <a href="#" data-page="home" class="text-accent text-sm">← Torna alla home</a>
+    <p class="text-xs tracking-[.4em] text-accent mt-6 mb-3">DOCUMENTO LEGALE</p>
+    <h1 class="font-display text-5xl md:text-7xl mb-8">Cookie Policy</h1>
+    <div class="text-mute space-y-6 leading-relaxed">
+      <p><strong class="text-fore">Ultimo aggiornamento:</strong> Gennaio 2026</p>
+      <p>Questo sito utilizza un numero <strong class="text-fore">minimo</strong> di cookie. Di seguito trovi tutte le informazioni necessarie a capire quali e perché.</p>
+
+      <h2 class="text-fore font-display text-3xl mt-8">1. Cosa sono i cookie</h2>
+      <p>I cookie sono piccoli file di testo che i siti visitati inviano al tuo dispositivo, dove vengono memorizzati per essere ritrasmessi agli stessi siti alla visita successiva.</p>
+
+      <h2 class="text-fore font-display text-3xl mt-8">2. Cookie tecnici (sempre attivi)</h2>
+      <p>Necessari al funzionamento del sito. Non richiedono consenso.</p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li><strong class="text-fore">cookie_consent</strong> — memorizza la tua scelta sui cookie. Durata: 12 mesi.</li>
+      </ul>
+
+      <h2 class="text-fore font-display text-3xl mt-8">3. Cookie di terze parti</h2>
+      <p>Il sito carica risorse da CDN esterne (Tailwind, AOS, Google Fonts). Questi servizi possono raccogliere dati tecnici di connessione.</p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>Google Fonts — fornitura webfont.</li>
+        <li>cdn.tailwindcss.com — framework CSS.</li>
+        <li>unpkg.com — libreria animazioni AOS.</li>
+      </ul>
+
+      <h2 class="text-fore font-display text-3xl mt-8">4. Gestione del consenso</h2>
+      <p>Puoi modificare le tue preferenze in qualsiasi momento cliccando il pulsante qui sotto:</p>
+      <button id="resetCookies" class="btn-ghost mt-2">Rivedi le preferenze cookie</button>
+
+      <h2 class="text-fore font-display text-3xl mt-8">5. Disabilitare i cookie</h2>
+      <p>Puoi gestire i cookie anche dalle impostazioni del tuo browser. Disabilitarli può compromettere alcune funzionalità del sito.</p>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-panel border-t border-line">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-16">
+    <div class="grid md:grid-cols-4 gap-10">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-ink font-black">C</span>
+          <span class="font-display tracking-wide text-xl">CICLOFFICINA</span>
+        </div>
+        <p class="text-mute max-w-md">Officina sociale, autogestita e a pedali. Dal 2014 ripariamo bici e relazioni.</p>
+      </div>
+      <div>
+        <p class="text-fore font-medium mb-3">Naviga</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#servizi" class="footer-link">Servizi</a></li>
+          <li><a href="#officina" class="footer-link">Officina</a></li>
+          <li><a href="#listino" class="footer-link">Listino</a></li>
+          <li><a href="#contatti" class="footer-link">Contatti</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-fore font-medium mb-3">Legale</p>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" data-page="privacy" class="footer-link">Privacy Policy</a></li>
+          <li><a href="#" data-page="cookie" class="footer-link">Cookie Policy</a></li>
+          <li><button id="footerCookieBtn" class="footer-link">Preferenze cookie</button></li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-12 pt-6 border-t border-line flex flex-wrap items-center justify-between gap-4 text-sm text-mute">
+      <p>© <span id="year"></span> Ciclofficina Sociale APS — P.IVA 00000000000</p>
+      <p>Fatto a mano, con grasso e amore.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- COOKIE BANNER -->
+<div id="cookieBanner" class="cookie-banner">
+  <div class="flex items-start gap-3 mb-3">
+    <div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-ink text-xl flex-shrink-0">🍪</div>
+    <div>
+      <p class="font-display text-xl leading-tight">Cookie & privacy</p>
+      <p class="text-mute text-sm mt-1">Usiamo solo cookie tecnici essenziali e risorse caricate da CDN esterne (font, framework). Nessun tracciamento pubblicitario.</p>
+    </div>
+  </div>
+  <div class="flex flex-wrap gap-2 mt-3">
+    <button id="cookieAccept" class="btn-accent text-sm py-2 px-4">Accetta</button>
+    <button id="cookieDecline" class="btn-ghost text-sm py-2 px-4">Solo essenziali</button>
+    <a href="#" data-page="cookie" id="cookieMore" class="text-mute text-sm py-2 px-2 self-center hover:text-accent">Scopri di più →</a>
+  </div>
+</div>
+
+<!-- AOS -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
+
+  // year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ===== HAMBURGER MENU =====
+  const navBtn = document.getElementById('navBtn');
+  const navMenu = document.getElementById('navMenu');
+  const closeMenu = () => {
+    navMenu.classList.remove('open');
+    navBtn.classList.remove('active');
+    document.body.classList.remove('menu-open');
+  };
+  const openMenu = () => {
+    navMenu.classList.add('open');
+    navBtn.classList.add('active');
+    document.body.classList.add('menu-open');
+  };
+  navBtn.addEventListener('click', () => {
+    navMenu.classList.contains('open') ? closeMenu() : openMenu();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+
+  // ===== MULTI-PAGE ROUTING (single file, JS-driven) =====
+  const pages = { home: 'page-home', privacy: 'page-privacy', cookie: 'page-cookie' };
+  function showPage(name, hash) {
+    Object.values(pages).forEach(id => document.getElementById(id).classList.remove('active'));
+    document.getElementById(pages[name] || pages.home).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (hash) {
+      setTimeout(() => {
+        const el = document.querySelector(hash);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+    }
+  }
+  document.querySelectorAll('[data-page]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const page = el.getAttribute('data-page');
+      const href = el.getAttribute('href') || '';
+      const hash = href.startsWith('#') && href.length > 1 ? href : null;
+      showPage(page, hash);
+      closeMenu();
+    });
+  });
+
+  // close menu on any internal anchor click
+  navMenu.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', () => setTimeout(closeMenu, 120));
+  });
+
+  // ===== COOKIE BANNER =====
+  const banner = document.getElementById('cookieBanner');
+  const KEY = 'cookie_consent';
+  function showBanner() { setTimeout(() => banner.classList.add('show'), 800); }
+  function hideBanner() { banner.classList.remove('show'); }
+  if (!localStorage.getItem(KEY)) showBanner();
+
+  document.getElementById('cookieAccept').addEventListener('click', () => {
+    localStorage.setItem(KEY, 'all'); hideBanner();
+  });
+  document.getElementById('cookieDecline').addEventListener('click', () => {
+    localStorage.setItem(KEY, 'essential'); hideBanner();
+  });
+  document.getElementById('footerCookieBtn').addEventListener('click', () => {
+    localStorage.removeItem(KEY); showBanner();
+  });
+  const reset = document.getElementById('resetCookies');
+  if (reset) reset.addEventListener('click', () => { localStorage.removeItem(KEY); showBanner(); });
+</script>
+</body>
+</html>
