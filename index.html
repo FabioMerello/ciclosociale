@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ciclofficina Sociale — Riparazione, Vendita e Noleggio Bici</title>
+<meta name="description" content="Ciclofficina sociale: riparazione, vendita e noleggio biciclette. Un laboratorio aperto, autogestito e a pedali per la mobilità sostenibile." />
+<link rel="canonical" href="./" />
+<meta property="og:title" content="Ciclofficina Sociale" />
+<meta property="og:description" content="Riparazione, vendita e noleggio biciclette in un laboratorio aperto e sociale." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="./assets/hero.jpg" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:    '#0b0b0d',
+          panel:  '#141417',
+          line:   '#23232a',
+          mute:   '#9a9aa6',
+          fore:   '#f4f4f0',
+          accent: '#f4c430', // safety yellow
+          accent2:'#ff5a1f',
+        },
+        fontFamily: {
+          display: ['"Bebas Neue"', 'system-ui', 'sans-serif'],
+          sans:    ['Inter', 'system-ui', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: #0b0b0d; color: #f4f4f0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+  .grain::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:1;
+    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 3px 3px; mix-blend-mode: overlay; opacity:.4;
+  }
+
+  .display { font-family:'Bebas Neue', sans-serif; letter-spacing:.02em; line-height:.9; }
+
+  .btn {
+    display:inline-flex; align-items:center; gap:.6rem;
+    padding:.95rem 1.6rem; border-radius:9999px;
+    font-weight:600; letter-spacing:.02em; transition:transform .25s ease, background .25s ease, color .25s ease;
+  }
+  .btn-primary { background:#f4c430; color:#0b0b0d; }
+  .btn-primary:hover { transform: translateY(-2px); background:#ffd24a; }
+  .btn-ghost { border:1px solid #2c2c33; color:#f4f4f0; }
+  .btn-ghost:hover { border-color:#f4c430; color:#f4c430; }
+
+  .chip {
+    display:inline-flex; align-items:center; gap:.5rem;
+    padding:.35rem .75rem; border:1px solid #2c2c33; border-radius:9999px;
+    font-size:.75rem; letter-spacing:.18em; text-transform:uppercase; color:#f4c430;
+  }
+
+  .card { background:linear-gradient(180deg, #141417 0%, #0f0f12 100%); border:1px solid #1f1f25; }
+  .card:hover { border-color:#f4c430; }
+  .card { transition: border-color .3s ease, transform .3s ease; }
+  .card:hover { transform: translateY(-4px); }
+
+  /* Animated wheel */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin-slow { animation: spin 14s linear infinite; transform-origin:50% 50%; }
+
+  /* Marquee */
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .marquee-track { animation: marquee 30s linear infinite; }
+
+  /* Underline link */
+  .ulink { position:relative; }
+  .ulink::after{
+    content:""; position:absolute; left:0; bottom:-4px; height:2px; width:100%;
+    background:#f4c430; transform: scaleX(0); transform-origin:right; transition: transform .35s ease;
+  }
+  .ulink:hover::after { transform: scaleX(1); transform-origin:left; }
+
+  .hero-bg::after{
+    content:""; position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(11,11,13,.55) 0%, rgba(11,11,13,.85) 60%, #0b0b0d 100%);
+  }
+
+  .price-tag { font-family:'Bebas Neue', sans-serif; font-size:2.25rem; line-height:1; color:#f4c430; }
+
+  /* Mobile menu */
+  .nav-open { transform: translateY(0); opacity:1; pointer-events:auto; }
+  .nav-closed { transform: translateY(-10px); opacity:0; pointer-events:none; }
+</style>
+</head>
+<body class="grain antialiased selection:bg-accent selection:text-ink">
+
+<!-- NAV -->
+<header class="fixed top-0 inset-x-0 z-50 backdrop-blur bg-ink/70 border-b border-line">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3 group">
+      <svg viewBox="0 0 64 64" class="w-9 h-9 text-accent spin-slow" fill="none" stroke="currentColor" stroke-width="3">
+        <circle cx="32" cy="32" r="28"/>
+        <circle cx="32" cy="32" r="2.5" fill="currentColor"/>
+        <path d="M32 4 L32 60 M4 32 L60 32 M12 12 L52 52 M52 12 L12 52"/>
+      </svg>
+      <div class="leading-tight">
+        <div class="display text-xl">Ciclofficina</div>
+        <div class="text-[10px] tracking-[0.3em] text-mute uppercase">Sociale · dal 2014</div>
+      </div>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8 text-sm">
+      <a href="#servizi" class="ulink">Servizi</a>
+      <a href="#officina" class="ulink">Officina</a>
+      <a href="#noleggio" class="ulink">Noleggio</a>
+      <a href="#orari" class="ulink">Orari</a>
+      <a href="#contatti" class="btn btn-primary !py-2 !px-4 text-sm">Vieni a trovarci</a>
+    </nav>
+
+    <button id="navBtn" class="md:hidden text-fore" aria-label="Menu">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+
+  <div id="navMenu" class="md:hidden nav-closed transition-all duration-300 absolute top-16 inset-x-0 bg-panel border-b border-line">
+    <div class="flex flex-col px-6 py-6 gap-4 text-sm">
+      <a href="#servizi">Servizi</a>
+      <a href="#officina">Officina</a>
+      <a href="#noleggio">Noleggio</a>
+      <a href="#orari">Orari</a>
+      <a href="#contatti" class="btn btn-primary w-fit !py-2 !px-4 text-sm">Vieni a trovarci</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="top" class="relative min-h-screen flex items-end overflow-hidden hero-bg">
+  <img src="./assets/hero.jpg" alt="Officina di biciclette al chiuso, atmosfera notturna" class="absolute inset-0 w-full h-full object-cover opacity-70" />
+  <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pb-20 pt-32 w-full">
+    <div data-aos="fade-up" class="max-w-3xl">
+      <span class="chip mb-6">Officina autogestita · Mobilità dolce</span>
+      <h1 class="display text-[18vw] sm:text-[9vw] lg:text-[8rem] text-fore break-words">
+        Pedala. <br/> Ripara. <br class="sm:hidden"/> <span class="text-accent">Resisti.</span>
+      </h1>
+      <p class="mt-6 text-lg sm:text-xl text-mute max-w-2xl">
+        Una ciclofficina sociale dove impari a riparare la tua bici, ne adotti una rigenerata o ne noleggi una per esplorare la città. A pedali, insieme.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="#servizi" class="btn btn-primary">
+          Scopri i servizi
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#contatti" class="btn btn-ghost">Vieni in officina</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- floating stats -->
+  <div data-aos="fade-up" data-aos-delay="200" class="hidden md:flex absolute right-8 bottom-24 z-10 flex-col gap-4">
+    <div class="card rounded-2xl p-5 w-56">
+      <div class="display text-5xl text-accent">+1.200</div>
+      <div class="text-xs uppercase tracking-widest text-mute mt-1">Bici riparate</div>
+    </div>
+    <div class="card rounded-2xl p-5 w-56">
+      <div class="display text-5xl text-accent">12 anni</div>
+      <div class="text-xs uppercase tracking-widest text-mute mt-1">Di quartiere</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="bg-accent text-ink overflow-hidden border-y border-ink/20">
+  <div class="flex marquee-track whitespace-nowrap py-4 display text-3xl">
+    <div class="flex gap-12 px-6">
+      <span>· Ripariamo insieme</span><span>· Vendita bici rigenerate</span><span>· Noleggio orario e giornaliero</span><span>· Corsi di meccanica</span><span>· Mobilità sostenibile</span>
+      <span>· Ripariamo insieme</span><span>· Vendita bici rigenerate</span><span>· Noleggio orario e giornaliero</span><span>· Corsi di meccanica</span><span>· Mobilità sostenibile</span>
+    </div>
+  </div>
+</div>
+
+<!-- SERVIZI -->
+<section id="servizi" class="py-28 px-5 sm:px-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex items-end justify-between flex-wrap gap-6 mb-14">
+      <div data-aos="fade-up">
+        <span class="chip mb-4">01 — Cosa facciamo</span>
+        <h2 class="display text-6xl sm:text-7xl">Tre anime, <br/> una sola officina.</h2>
+      </div>
+      <p data-aos="fade-up" data-aos-delay="100" class="max-w-md text-mute">
+        Non siamo un negozio. Siamo uno spazio collettivo dove le competenze circolano libere come le ruote.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <article data-aos="fade-up" class="card rounded-3xl overflow-hidden">
+        <div class="aspect-[4/3] overflow-hidden">
+          <img src="./assets/repair.jpg" alt="Riparazione bicicletta" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/>
+        </div>
+        <div class="p-7">
+          <div class="display text-accent text-2xl mb-1">01</div>
+          <h3 class="display text-3xl mb-3">Riparazione</h3>
+          <p class="text-mute text-sm leading-relaxed">Porta la tua bici, usa i nostri strumenti, fatti guidare da un meccanico volontario. Si lavora insieme.</p>
+        </div>
+      </article>
+
+      <article data-aos="fade-up" data-aos-delay="100" class="card rounded-3xl overflow-hidden">
+        <div class="aspect-[4/3] overflow-hidden">
+          <img src="./assets/sale.jpg" alt="Biciclette in vendita" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/>
+        </div>
+        <div class="p-7">
+          <div class="display text-accent text-2xl mb-1">02</div>
+          <h3 class="display text-3xl mb-3">Vendita rigenerate</h3>
+          <p class="text-mute text-sm leading-relaxed">Bici recuperate, smontate, rimesse a nuovo. A prezzi popolari. Ogni telaio ha una seconda vita.</p>
+        </div>
+      </article>
+
+      <article data-aos="fade-up" data-aos-delay="200" class="card rounded-3xl overflow-hidden">
+        <div class="aspect-[4/3] overflow-hidden">
+          <img src="./assets/rent.jpg" alt="Bicicletta a noleggio" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"/>
+        </div>
+        <div class="p-7">
+          <div class="display text-accent text-2xl mb-1">03</div>
+          <h3 class="display text-3xl mb-3">Noleggio</h3>
+          <p class="text-mute text-sm leading-relaxed">City bike, gravel e cargo a ore o giornate. Lucchetto e casco inclusi. Pedala dove vuoi.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- OFFICINA / VALORI -->
+<section id="officina" class="py-28 px-5 sm:px-8 bg-panel border-y border-line relative overflow-hidden">
+  <div class="absolute -right-32 -top-32 opacity-10">
+    <svg viewBox="0 0 64 64" class="w-[500px] h-[500px] text-accent spin-slow" fill="none" stroke="currentColor" stroke-width="1">
+      <circle cx="32" cy="32" r="30"/><circle cx="32" cy="32" r="20"/><circle cx="32" cy="32" r="10"/>
+      <path d="M32 2v60M2 32h60M11 11l42 42M53 11L11 53"/>
+    </svg>
+  </div>
+
+  <div class="max-w-7xl mx-auto relative">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div data-aos="fade-right">
+        <span class="chip mb-4">02 — Chi siamo</span>
+        <h2 class="display text-6xl sm:text-7xl mb-6">Un laboratorio <br/> che <span class="text-accent">non vende</span> <br/> dipendenza.</h2>
+        <p class="text-mute leading-relaxed mb-4">
+          Apriamo le porte tre volte alla settimana. Chiavi inglesi, cacciaviti, smontagomme: tutto è a disposizione di chi entra. Non paghi la mano d'opera, contribuisci con quello che puoi.
+        </p>
+        <p class="text-mute leading-relaxed">
+          La ciclofficina è uno spazio mutualistico: scambiamo saperi, ricicliamo materiali, costruiamo comunità sopra a due ruote.
+        </p>
+      </div>
+
+      <div data-aos="fade-left" class="grid grid-cols-2 gap-4">
+        <div class="card rounded-2xl p-6">
+          <div class="display text-5xl text-accent">100%</div>
+          <div class="text-xs uppercase tracking-widest text-mute mt-2">Volontariato</div>
+        </div>
+        <div class="card rounded-2xl p-6">
+          <div class="display text-5xl text-accent">0 €</div>
+          <div class="text-xs uppercase tracking-widest text-mute mt-2">Mano d'opera</div>
+        </div>
+        <div class="card rounded-2xl p-6">
+          <div class="display text-5xl text-accent">38</div>
+          <div class="text-xs uppercase tracking-widest text-mute mt-2">Soci attivi</div>
+        </div>
+        <div class="card rounded-2xl p-6">
+          <div class="display text-5xl text-accent">∞</div>
+          <div class="text-xs uppercase tracking-widest text-mute mt-2">Voglia di pedalare</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOLEGGIO PRICING -->
+<section id="noleggio" class="py-28 px-5 sm:px-8">
+  <div class="max-w-7xl mx-auto">
+    <div data-aos="fade-up" class="text-center max-w-2xl mx-auto mb-16">
+      <span class="chip mb-4">03 — Noleggio</span>
+      <h2 class="display text-6xl sm:text-7xl">Sali in sella, <br/> il resto lo facciamo noi.</h2>
+      <p class="text-mute mt-4">Tariffe etiche, solidali. Sconto soci ARCI e studenti.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div data-aos="zoom-in" class="card rounded-3xl p-8">
+        <div class="text-xs uppercase tracking-widest text-mute">2 ore</div>
+        <div class="price-tag mt-2">5 €</div>
+        <div class="h-px bg-line my-6"></div>
+        <ul class="space-y-3 text-sm text-mute">
+          <li>✶ City bike o pieghevole</li>
+          <li>✶ Lucchetto incluso</li>
+          <li>✶ Casco su richiesta</li>
+        </ul>
+      </div>
+
+      <div data-aos="zoom-in" data-aos-delay="100" class="card rounded-3xl p-8 !border-accent relative">
+        <span class="absolute -top-3 left-8 bg-accent text-ink text-xs px-3 py-1 rounded-full font-bold tracking-wider">PIÙ SCELTO</span>
+        <div class="text-xs uppercase tracking-widest text-accent">Giornata</div>
+        <div class="price-tag mt-2">12 €</div>
+        <div class="h-px bg-line my-6"></div>
+        <ul class="space-y-3 text-sm text-mute">
+          <li>✶ Tutta la gamma disponibile</li>
+          <li>✶ Lucchetto + casco + luci</li>
+          <li>✶ Mappa cicloturistica</li>
+        </ul>
+      </div>
+
+      <div data-aos="zoom-in" data-aos-delay="200" class="card rounded-3xl p-8">
+        <div class="text-xs uppercase tracking-widest text-mute">Weekend</div>
+        <div class="price-tag mt-2">25 €</div>
+        <div class="h-px bg-line my-6"></div>
+        <ul class="space-y-3 text-sm text-mute">
+          <li>✶ Gravel o cargo bike</li>
+          <li>✶ Borse e accessori</li>
+          <li>✶ Assistenza telefonica</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORARI / CONTATTI -->
+<section id="orari" class="py-28 px-5 sm:px-8 bg-panel border-y border-line">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16">
+    <div data-aos="fade-up">
+      <span class="chip mb-4">04 — Quando</span>
+      <h2 class="display text-6xl sm:text-7xl mb-8">Ci trovi <br/> aperti.</h2>
+      <ul class="divide-y divide-line border-y border-line">
+        <li class="flex justify-between py-4"><span>Martedì</span><span class="text-accent">17:00 — 20:00</span></li>
+        <li class="flex justify-between py-4"><span>Giovedì</span><span class="text-accent">17:00 — 20:00</span></li>
+        <li class="flex justify-between py-4"><span>Sabato</span><span class="text-accent">10:00 — 13:00</span></li>
+        <li class="flex justify-between py-4 text-mute"><span>Lun · Mer · Ven · Dom</span><span>Chiuso</span></li>
+      </ul>
+    </div>
+
+    <div id="contatti" data-aos="fade-up" data-aos-delay="100">
+      <span class="chip mb-4">05 — Dove</span>
+      <h2 class="display text-6xl sm:text-7xl mb-8">Vieni a <br/>trovarci.</h2>
+      <div class="space-y-4 text-mute">
+        <p><span class="text-fore font-semibold">Indirizzo:</span><br/>Via delle Officine 14, Quartiere Vivo</p>
+        <p><span class="text-fore font-semibold">Email:</span><br/><a href="mailto:ciao@ciclofficina.org" class="ulink text-accent">ciao@ciclofficina.org</a></p>
+        <p><span class="text-fore font-semibold">Telefono:</span><br/>+39 333 123 4567</p>
+      </div>
+
+      <div class="flex gap-3 mt-8">
+        <a href="#" class="btn btn-ghost !py-2 !px-4 text-sm">Instagram</a>
+        <a href="#" class="btn btn-ghost !py-2 !px-4 text-sm">Telegram</a>
+        <a href="#" class="btn btn-ghost !py-2 !px-4 text-sm">Mastodon</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="py-28 px-5 sm:px-8 text-center">
+  <div data-aos="zoom-in" class="max-w-4xl mx-auto">
+    <h2 class="display text-7xl sm:text-9xl leading-none">
+      Una bici <br/> <span class="text-accent">cambia</span> la città.
+    </h2>
+    <p class="text-mute mt-6 max-w-xl mx-auto">Tessera annuale 15 €. Officina, corsi, eventi e sconti su noleggio e ricambi.</p>
+    <a href="#contatti" class="btn btn-primary mt-8">Diventa socio</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t border-line py-10 px-5 sm:px-8">
+  <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-sm text-mute">
+    <div>© <span id="year"></span> Ciclofficina Sociale · APS</div>
+    <div>Made with ⚙ &amp; pedali</div>
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
+
+  // year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // mobile nav
+  const btn = document.getElementById('navBtn');
+  const menu = document.getElementById('navMenu');
+  btn.addEventListener('click', () => {
+    menu.classList.toggle('nav-open');
+    menu.classList.toggle('nav-closed');
+  });
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    menu.classList.add('nav-closed');
+    menu.classList.remove('nav-open');
+  }));
+</script>
+</body>
+</html>
